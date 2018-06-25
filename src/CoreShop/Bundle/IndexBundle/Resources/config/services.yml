@@ -4,6 +4,9 @@ imports:
     - { resource: "services/commands.yml" }
 
 services:
+    _defaults:
+        public: true
+
     coreshop.factory.index.list:
         class: CoreShop\Bundle\IndexBundle\Factory\ListingFactory
         arguments:
