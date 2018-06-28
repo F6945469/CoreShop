@@ -32,7 +32,7 @@ final class CustomerListener extends AbstractNotificationRuleListener
             'type' => UserTypeChecker::TYPE_PASSWORD_RESET,
             'recipient' => $event->getCustomer()->getEmail(),
             'resetLink' => $event->getResetLink(),
-            '_locale' => $this->shopperContext->getLocaleCode()
+            '_locale' => $this->shopperContext->getLocaleCode(),
         ]);
     }
 
@@ -44,18 +44,18 @@ final class CustomerListener extends AbstractNotificationRuleListener
         Assert::isInstanceOf($event->getSubject(), CustomerInterface::class);
 
         /**
-         * @var $user CustomerInterface
+         * @var CustomerInterface
          */
         $user = $event->getSubject();
 
-        if ($user->getIsGuest() === true) {
+        if (true === $user->getIsGuest()) {
             return;
         }
 
         $this->rulesProcessor->applyRules('user', $user, [
             'type' => UserTypeChecker::TYPE_REGISTER,
             'recipient' => $user->getEmail(),
-            '_locale' => $this->shopperContext->getLocaleCode()
+            '_locale' => $this->shopperContext->getLocaleCode(),
         ]);
     }
 
@@ -67,11 +67,11 @@ final class CustomerListener extends AbstractNotificationRuleListener
         Assert::isInstanceOf($event->getCustomer(), CustomerInterface::class);
 
         /**
-         * @var $user CustomerInterface
+         * @var CustomerInterface
          */
         $user = $event->getCustomer();
 
-        if ($user->getIsGuest() === true) {
+        if (true === $user->getIsGuest()) {
             return;
         }
 
@@ -81,7 +81,7 @@ final class CustomerListener extends AbstractNotificationRuleListener
 
         $user->setNewsletterToken(hash('md5', $user->getId().$user->getEmail().mt_rand().time()));
 
-        VersionHelper::useVersioning(function() use ($user) {
+        VersionHelper::useVersioning(function () use ($user) {
             $user->save();
         }, false);
 
@@ -98,7 +98,7 @@ final class CustomerListener extends AbstractNotificationRuleListener
             'email' => $user->getEmail(),
             'token' => $user->getNewsletterToken(),
             'object' => $user,
-            'confirmLink' => $confirmLink
+            'confirmLink' => $confirmLink,
         ]);
     }
 
@@ -110,18 +110,18 @@ final class CustomerListener extends AbstractNotificationRuleListener
         Assert::isInstanceOf($event->getSubject(), CustomerInterface::class);
 
         /**
-         * @var $user CustomerInterface
+         * @var CustomerInterface
          */
         $user = $event->getSubject();
 
-        if ($user->getIsGuest() === true) {
+        if (true === $user->getIsGuest()) {
             return;
         }
 
         $this->rulesProcessor->applyRules('user', $user, [
             'type' => UserTypeChecker::TYPE_NEWSLETTER_CONFIRMED,
             'recipient' => $user->getEmail(),
-            '_locale' => $this->shopperContext->getLocaleCode()
+            '_locale' => $this->shopperContext->getLocaleCode(),
         ]);
     }
 }

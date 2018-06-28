@@ -22,7 +22,7 @@ interface LocalizedInterpreterInterface extends InterpreterInterface
      * @param $value
      * @param IndexableInterface   $object
      * @param IndexColumnInterface $config
-     * @param array $interpreterConfig
+     * @param array                $interpreterConfig
      *
      * @return mixed
      */

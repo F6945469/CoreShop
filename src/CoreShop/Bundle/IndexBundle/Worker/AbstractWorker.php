@@ -57,9 +57,9 @@ abstract class AbstractWorker implements WorkerInterface
     protected $filterGroupHelper;
 
     /**
-     * @param ServiceRegistryInterface $extensions
-     * @param ServiceRegistryInterface $getterServiceRegistry
-     * @param ServiceRegistryInterface $interpreterServiceRegistry
+     * @param ServiceRegistryInterface   $extensions
+     * @param ServiceRegistryInterface   $getterServiceRegistry
+     * @param ServiceRegistryInterface   $interpreterServiceRegistry
      * @param FilterGroupHelperInterface $filterGroupHelper
      */
     public function __construct(
@@ -67,8 +67,7 @@ abstract class AbstractWorker implements WorkerInterface
         ServiceRegistryInterface $getterServiceRegistry,
         ServiceRegistryInterface $interpreterServiceRegistry,
         FilterGroupHelperInterface $filterGroupHelper
-    )
-    {
+    ) {
         $this->extensions = $extensions;
         $this->getterServiceRegistry = $getterServiceRegistry;
         $this->interpreterServiceRegistry = $interpreterServiceRegistry;
@@ -102,17 +101,16 @@ abstract class AbstractWorker implements WorkerInterface
         $hidePublishedMemory = AbstractObject::doHideUnpublished();
         AbstractObject::setHideUnpublished(false);
 
-
         $result = InheritanceHelper::useInheritedValues(function () use ($index, $object) {
             $extensions = $this->getExtensions($index);
 
             $virtualObjectId = $object->getId();
             $virtualObjectActive = $object->getEnabled();
 
-            if ($object->getType() === Concrete::OBJECT_TYPE_VARIANT) {
+            if (Concrete::OBJECT_TYPE_VARIANT === $object->getType()) {
                 $parent = $object->getParent();
 
-                while ($parent->getType() === Concrete::OBJECT_TYPE_VARIANT && $parent instanceof $object) {
+                while (Concrete::OBJECT_TYPE_VARIANT === $parent->getType() && $parent instanceof $object) {
                     $parent = $parent->getParent();
                 }
 
@@ -128,8 +126,8 @@ abstract class AbstractWorker implements WorkerInterface
                 'o_classId' => $object->getClassId(),
                 'o_className' => $object->getClassName(),
                 'o_virtualObjectId' => $virtualObjectId,
-                'o_virtualObjectActive' => $virtualObjectActive === null ? false : $virtualObjectActive,
-                'o_type' => $object->getType()
+                'o_virtualObjectActive' => null === $virtualObjectActive ? false : $virtualObjectActive,
+                'o_type' => $object->getType(),
             ];
 
             foreach ($extensions as $extension) {
@@ -164,31 +162,30 @@ abstract class AbstractWorker implements WorkerInterface
                     if ($column->hasGetter()) {
                         $value = $this->processGetter($column, $object);
                     } else {
-                        $getter = 'get' . ucfirst($column->getObjectKey());
+                        $getter = 'get'.ucfirst($column->getObjectKey());
 
                         if (method_exists($object, $getter)) {
                             $value = $object->$getter();
                         }
                     }
 
-                    list ($columnLocalizedData, $columnRelationData, $value, $isLocalizedValue) = $this->processInterpreter($column, $object, $value, $virtualObjectId);
+                    list($columnLocalizedData, $columnRelationData, $value, $isLocalizedValue) = $this->processInterpreter($column, $object, $value, $virtualObjectId);
 
                     $relationData = array_merge_recursive($relationData, $columnRelationData);
                     $localizedData = array_merge_recursive($localizedData, $columnLocalizedData);
 
-
                     if (!$isLocalizedValue) {
                         if (is_array($value)) {
-                            $value = ',' . implode($value, ',') . ',';
+                            $value = ','.implode($value, ',').',';
                         }
 
                         $value = $this->typeCastValues($column, $value);
 
                         $data[$column->getName()] = $value;
                     }
-
                 } catch (\Exception $e) {
-                    $this->logger->error('Exception in CoreShopIndexService: ' . $e->getMessage(), [$e]);
+                    $this->logger->error('Exception in CoreShopIndexService: '.$e->getMessage(), [$e]);
+
                     throw $e;
                 }
             }
@@ -212,6 +209,7 @@ abstract class AbstractWorker implements WorkerInterface
     /**
      * @param IndexColumnInterface $column
      * @param $value
+     *
      * @return mixed
      */
     protected function typeCastValues(IndexColumnInterface $column, $value)
@@ -240,7 +238,6 @@ abstract class AbstractWorker implements WorkerInterface
                 return strval($value);
         }
 
-
         throw new \InvalidArgumentException(sprintf(
             'Unknown type %s given, valid types are %s',
             $column->getColumnType(),
@@ -250,16 +247,17 @@ abstract class AbstractWorker implements WorkerInterface
                 IndexColumnInterface::FIELD_TYPE_INTEGER,
                 IndexColumnInterface::FIELD_TYPE_BOOLEAN,
                 IndexColumnInterface::FIELD_TYPE_DATE,
-                IndexColumnInterface::FIELD_TYPE_TEXT
+                IndexColumnInterface::FIELD_TYPE_TEXT,
             ])
         ));
     }
 
     /**
      * @param IndexColumnInterface $column
-     * @param IndexableInterface $object
+     * @param IndexableInterface   $object
      * @param $value
      * @param $virtualObjectId
+     *
      * @return array
      */
     protected function processRelationalData(IndexColumnInterface $column, IndexableInterface $object, $value, $virtualObjectId)
@@ -282,7 +280,8 @@ abstract class AbstractWorker implements WorkerInterface
 
     /**
      * @param IndexColumnInterface $column
-     * @param IndexableInterface $object
+     * @param IndexableInterface   $object
+     *
      * @return mixed|null
      */
     protected function processGetter(IndexColumnInterface $column, IndexableInterface $object)
@@ -298,10 +297,12 @@ abstract class AbstractWorker implements WorkerInterface
 
     /**
      * @param IndexColumnInterface $column
-     * @param IndexableInterface $object
+     * @param IndexableInterface   $object
      * @param $originalValue
      * @param $virtualObjectId
+     *
      * @return array
+     *
      * @throws \Exception
      */
     protected function processInterpreter(IndexColumnInterface $column, IndexableInterface $object, $originalValue, $virtualObjectId)
@@ -332,7 +333,7 @@ abstract class AbstractWorker implements WorkerInterface
         }
 
         return [
-            $localizedData, $relationData, $value, $isLocalizedValue
+            $localizedData, $relationData, $value, $isLocalizedValue,
         ];
     }
 
@@ -421,7 +422,7 @@ abstract class AbstractWorker implements WorkerInterface
             'o_virtualObjectId' => IndexColumnInterface::FIELD_TYPE_INTEGER,
             'o_virtualObjectActive' => IndexColumnInterface::FIELD_TYPE_BOOLEAN,
             'o_type' => IndexColumnInterface::FIELD_TYPE_STRING,
-            'active' => IndexColumnInterface::FIELD_TYPE_BOOLEAN
+            'active' => IndexColumnInterface::FIELD_TYPE_BOOLEAN,
         ];
     }
 
@@ -435,7 +436,7 @@ abstract class AbstractWorker implements WorkerInterface
         return [
             'o_id' => IndexColumnInterface::FIELD_TYPE_INTEGER,
             'language' => IndexColumnInterface::FIELD_TYPE_STRING,
-            'name' => IndexColumnInterface::FIELD_TYPE_STRING
+            'name' => IndexColumnInterface::FIELD_TYPE_STRING,
         ];
     }
 }

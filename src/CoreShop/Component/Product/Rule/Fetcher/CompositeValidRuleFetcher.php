@@ -20,7 +20,7 @@ final class CompositeValidRuleFetcher implements ValidRulesFetcherInterface
     /**
      * @var ServiceRegistryInterface
      */
-    protected $validRuleFetchers;
+    private $validRuleFetchers;
 
     /**
      * @param ServiceRegistryInterface $validRuleFetchers
@@ -37,8 +37,8 @@ final class CompositeValidRuleFetcher implements ValidRulesFetcherInterface
     {
         $rules = [];
 
-        /**
-         * @var $validRuleFetcher ValidRulesFetcherInterface
+        /*
+         * @var ValidRulesFetcherInterface
          */
         foreach ($this->validRuleFetchers->all() as $validRuleFetcher) {
             $rules = array_merge($rules, $validRuleFetcher->getValidRules($product));

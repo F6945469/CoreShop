@@ -46,7 +46,7 @@ class CartPriceRuleValidationProcessor implements CartPriceRuleValidationProcess
 
         return $this->isValid($cart, $cartPriceRule, [
             'cartPriceRule' => $cartPriceRule,
-            'voucher' => $voucherCode
+            'voucher' => $voucherCode,
         ]);
     }
 
@@ -55,7 +55,7 @@ class CartPriceRuleValidationProcessor implements CartPriceRuleValidationProcess
      */
     public function isValid(ResourceInterface $subject, RuleInterface $rule, $params = [])
     {
-        /**
+        /*
          * @var $rule CartPriceRuleInterface
          */
         Assert::isInstanceOf($rule, CartPriceRuleInterface::class);

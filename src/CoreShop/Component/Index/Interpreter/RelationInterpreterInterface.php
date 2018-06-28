@@ -19,9 +19,10 @@ interface RelationInterpreterInterface extends InterpreterInterface
 {
     /**
      * @param $value
-     * @param IndexableInterface $indexable
+     * @param IndexableInterface   $indexable
      * @param IndexColumnInterface $config
-     * @param array $interpreterConfig
+     * @param array                $interpreterConfig
+     *
      * @return mixed
      */
     public function interpretRelational($value, IndexableInterface $indexable, IndexColumnInterface $config, $interpreterConfig = []);

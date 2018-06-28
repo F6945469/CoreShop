@@ -12,7 +12,6 @@
 
 namespace CoreShop\Component\Rule\Model;
 
-
 use CoreShop\Component\Resource\Model\SetValuesTrait;
 use CoreShop\Component\Resource\Model\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -55,7 +54,7 @@ trait RuleTrait
     /**
      * @return int
      */
-    public abstract function getId();
+    abstract public function getId();
 
     /**
      * @return string

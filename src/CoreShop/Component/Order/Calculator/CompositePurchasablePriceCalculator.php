@@ -37,8 +37,8 @@ class CompositePurchasablePriceCalculator implements PurchasablePriceCalculatorI
     {
         $price = false;
 
-        /**
-         * @var $calculator PurchasablePriceCalculatorInterface
+        /*
+         * @var PurchasablePriceCalculatorInterface
          */
         foreach ($this->calculators->all() as $calculator) {
             $actionPrice = $calculator->getPrice($purchasable, $includingDiscounts);
